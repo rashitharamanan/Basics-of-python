@@ -1,0 +1,75 @@
+import random
+import time
+
+def generate_board(size):
+    symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    pairs = size // 2
+    symbols = symbols[:pairs] * 2
+    shuffled_symbols = random.sample(symbols, len(symbols))
+    board = [shuffled_symbols[i:i+size] for i in range(0, len(shuffled_symbols), size)]
+    return board
+
+def display_board(board, revealed):
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if revealed[i][j]:
+                print(board[i][j], end=' ')
+            else:
+                print('*', end=' ')
+        print()
+
+def get_user_input(size):
+    while True:
+        try:
+            choice = int(input(f"Enter a number between 1 and {size*size}: "))
+            if 1 <= choice <= size*size:
+                return (choice - 1) // size, (choice - 1) % size
+            else:
+                print("Invalid input. Please enter a number within the specified range.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
+
+def play_memory_game(size):
+    board = generate_board(size)
+    revealed = [[False] * size for _ in range(size)]
+    pairs_found = 0
+
+    while pairs_found < size // 2:
+        display_board(board, revealed)
+
+        print("\nMake a move:")
+        row1, col1 = get_user_input(size)
+
+        if revealed[row1][col1]:
+            print("Card already revealed. Try again.")
+            continue
+
+        revealed[row1][col1] = True
+        display_board(board, revealed)
+
+        print("\nMake another move:")
+        row2, col2 = get_user_input(size)
+
+        if revealed[row2][col2]:
+            print("Card already revealed. Try again.")
+            revealed[row1][col1] = False
+            continue
+
+        revealed[row2][col2] = True
+        display_board(board, revealed)
+
+        if board[row1][col1] == board[row2][col2]:
+            print("\nCongratulations! You found a pair.")
+            pairs_found += 1
+        else:
+            print("\nSorry, the cards don't match. Try again.")
+            revealed[row1][col1] = False
+            revealed[row2][col2] = False
+
+        time.sleep(2)  # Give the player some time to see the cards
+
+    print("\nCongratulations! You've matched all pairs.")
+
+if __name__ == "__main__":
+    size = int(input("Enter the size of the memory game (even number): "))
+    play_memory_game(size)
