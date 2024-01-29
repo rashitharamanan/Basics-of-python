@@ -1,0 +1,26 @@
+def flames(name1, name2):
+    """Calculates the FLAMES result for two given names."""
+
+    # Combine and preprocess names
+    names = name1.upper() + name2.upper()
+    common_letters = set(name1.upper()) & set(name2.upper())
+
+    # Calculate remaining letters
+    remaining_letters = len(names) - len(common_letters)
+
+    # Apply FLAMES logic
+    flames_list = ["Friendship", "Love", "Affection", "Marriage", "Enemy", "Sibling"]
+    while len(flames_list) > 1:
+        count = remaining_letters % len(flames_list)
+        flames_list = flames_list[count:] + flames_list[:count]
+        flames_list.pop()
+
+    # Reveal the result
+    print(f"The FLAMES result is: {flames_list[0]}")
+
+# Get names from the user
+name1 = input("Enter the first name: ")
+name2 = input("Enter the second name: ")
+
+# Call the flames function to start the game
+flames(name1, name2)
